@@ -1,0 +1,113 @@
+﻿<Window x:Class="youtube_Downloader_2019.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+       Title="Youtube Downloader"  
+        Width="600"
+        Height="525"
+        Icon="images/icons8_youtube_3.ico"
+        Background="#E2E2E2">
+
+    <DockPanel Margin="5">
+
+        <Image DockPanel.Dock="Top" Source="images/youtube.png"/>
+        <Border DockPanel.Dock="Top" BorderThickness="1" BorderBrush="White" Padding="5,5,5,10" Background="#EEEEEE" Margin="10,0,10,10" CornerRadius="5" Height="118">
+            <Border BorderThickness="1" BorderBrush="White" Padding="5,10,5,10" Background="#BBBBBB" Margin="-4,-4,-4,-9" CornerRadius="5">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.2*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="0.4*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label x:Name="lblURL" Content="YouTube URL" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" FontSize="15" FontWeight="Bold" Grid.Column="0"/>
+                        <TextBox x:Name="tbURL" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" Padding="3,4,0,0" Grid.Column="1" TextChanged="LoadInfo_TextChanged" Grid.ColumnSpan="2"/>
+                        <ProgressBar Name="pbDownloadProgress" Minimum="0" Maximum="100" IsIndeterminate="False" Margin="0,50,0,0" Height="30" Grid.ColumnSpan="3" Visibility="Hidden"/>
+                        <ProgressBar Name="pbDownloadProgressmp3" Minimum="0" Maximum="100" IsIndeterminate="False" Margin="0,50,0,0" Height="30" Grid.ColumnSpan="3" Visibility="Hidden"/>
+                        <TextBlock Name="tbInfoProgress" Margin="0,50,0,0"  Padding="3" Height="30" FontSize="15" FontWeight="Bold" Grid.ColumnSpan="3" Visibility="Hidden"  HorizontalAlignment="Center" />
+
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Border>
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel Name="Info">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="0.2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Choisir Votre Format" Grid.Column="0" FontSize="16"/>
+                    <WrapPanel Grid.Column="1" Margin="0,5,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"  >
+
+                        <CheckBox Margin="0,0,32,0" x:Name="mp3check" >
+                            <TextBlock FontWeight="Bold"> MP3</TextBlock>
+                        </CheckBox>
+
+                        <CheckBox x:Name="vidcheck">
+                            <TextBlock FontWeight="Bold">Vidéo</TextBlock>
+                        </CheckBox>
+                    </WrapPanel>
+                    <ComboBox x:Name="ExtensionList" Grid.Column="2" Margin="0,0,5,0" Padding="8">
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}">
+                                <Setter Property="Padding" Value="5"/>
+                                <Style.Triggers>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="True"/>
+                                            <Condition Property="IsFocused" Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="FontSize" Value="15"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </MultiTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+                    <Button Name="DownloadButton" Click="DownloadButton_Click" Height="32" Grid.Column="3" Margin="0">
+                        <Image Source="images/icons8_software_installer_40px.png" Margin="0"/>
+                    </Button>
+                </Grid>
+
+                <GroupBox Margin="10,10,12.5,10">
+                    <GroupBox.Header>
+                        <Bold FontSize="15" FontStyle="Italic">INFORMATION SUR LE VIDEO</Bold>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label  Content="Titre:" FontWeight="Bold" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right"/>
+                        <TextBlock x:Name="lblTitle" Grid.Column="1" Grid.Row="0" Padding="0,5,0,0" Margin="0,0,10,0" />
+
+                        <Label  Content="Auteur:" FontWeight="Bold" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right"/>
+                        <TextBlock x:Name="lblAuthor" Grid.Column="1" Grid.Row="1" Padding="0,5,0,0" Margin="0,0,10,0"/>
+
+                        <Label  Content="Duration:"  FontWeight="Bold" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right"/>
+                        <TextBlock x:Name="lblDuration" Grid.Column="1" Grid.Row="2" Padding="0,5,0,0" Margin="0,0,10,0"/>
+
+                        <Label  Content="Description:" FontWeight="Bold" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right"/>
+                        <TextBlock x:Name="lblDescription" TextWrapping="Wrap" Grid.Column="1" Grid.Row="4" Padding="0,5,0,0" Margin="0,0,10,0"/>
+
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
