@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -85,17 +86,17 @@ namespace youtube_Downloader_2019
                         }
                         else
                         {
-                            System.Windows.MessageBox.Show("Nie wybrano rozszerzenia pliku!");
+                            System.Windows.MessageBox.Show("No file extension selected!");
                         }
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("Niepoprawna ściażka do zapisu pliku!");
+                        System.Windows.MessageBox.Show("Invalid path to save file!");
                     }
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("Nie podałeś ścieżki URL do pliku!");
+                    System.Windows.MessageBox.Show("You did not enter the URL path to the file!");
                 }
             }
 
@@ -190,6 +191,59 @@ namespace youtube_Downloader_2019
             }
 
             return (path + @"\" + newTitle + ".");
+        }
+
+        private async Task DownloadVideo()
+        {
+            //define the progress bar variable
+            var progress = new Progress<double>(p =>
+            {
+                pbDownloadProgress.Value = (int)(p * 100);
+                tbInfoProgress.Text = "% " + pbDownloadProgress.Value;
+            });
+
+            //client
+            var client = new YoutubeClient();
+            //parse youtube id
+            var id = YoutubeClient.ParseVideoId(tbURL.Text);
+            // Get video info
+            var video = await client.GetVideoMediaStreamInfosAsync(id.ToString());
+
+            var videoTitle = await client.GetVideoAsync(id.ToString());
+            string ext = ExtensionList.SelectedValue.ToString();
+            string myPath = GetFullPath(FBD.SelectedPath, videoTitle.Title, ext);
+            var streamInfo = video.Muxed.WithHighestVideoQuality();
+            string vidPath = GetFullPath(FBD.SelectedPath, RemoveIllegalPathCharacters(videoTitle.Title + ".mp4"));
+            await client.DownloadMediaStreamAsync(streamInfo, vidPath, progress);
+        }
+
+        private string RemoveIllegalPathCharacters(string path)
+        {
+            string regexSearch = new string(System.IO.Path.GetInvalidFileNameChars()) +
+                                 new string(System.IO.Path.GetInvalidPathChars());
+            var r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            return r.Replace(path, "");
+        }
+
+        private async Task downloadmp3()
+        {
+            var progress = new Progress<double>(p =>
+            {
+                pbDownloadProgress.Value = (int)(p * 100);
+                tbInfoProgress.Text = "% " + pbDownloadProgress.Value;
+            });
+
+            //client
+            var client = new YoutubeClient();
+            //parse youtube id
+            var id = YoutubeClient.ParseVideoId(tbURL.Text);
+            var videoTitle = await client.GetVideoAsync(id.ToString());
+
+            var audio = await client.GetVideoMediaStreamInfosAsync(id.ToString());
+            var streamInfo2 = audio.Audio.OrderByDescending(s => s.Bitrate).First();
+
+            string audioPath = GetFullPath(FBD.SelectedPath, RemoveIllegalPathCharacters(videoTitle.Title + ".mp3"));
+            await client.DownloadMediaStreamAsync(streamInfo2, audioPath, progress);
         }
     }
 }
